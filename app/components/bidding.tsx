@@ -17,13 +17,16 @@ import { Badge } from "@/components/ui/badge";
 import { Rocket, History, Trophy, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { Bid, getBids, sendBid } from "../actions";
+import { useRouter } from "next/navigation";
 
-export default function HackathonBidding() {
+export function HackathonBidding({ bids }: { bids: Bid[] }) {
   const [name, setName] = useState("");
   const [bidAmount, setBidAmount] = useState("");
-  const [bidHistory, setBidHistory] = useState<Bid[]>([]);
+  const [bidHistory, setBidHistory] = useState<Bid[]>(bids);
   const [isLoading, setIsLoading] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+
+  const router = useRouter();
 
   // Mock function to submit a bid
   const handleSubmitBid = async (e: React.FormEvent) => {
@@ -40,12 +43,10 @@ export default function HackathonBidding() {
       const amount = Number.parseInt(bidAmount);
       await sendBid(name, amount);
 
-      setBidHistory((prev) => [
-        { id: 99, amount, name, timestamp: new Date().toISOString() },
-        ...prev,
-      ]);
       setBidAmount("");
       toast("Bid submitted! 🚀");
+
+      setTimeout(() => fetchBidHistory(), 500);
     } catch (e) {
       console.error(e);
       toast("Failed to submit bid. Please try again later.");
@@ -60,13 +61,9 @@ export default function HackathonBidding() {
     await getBids();
     setIsHistoryLoading(true);
 
-    console.log("fetchBidHistory");
-
     const bids = await getBids();
 
-    console.log("finished fetch");
-
-    setBidHistory(bids);
+    setBidHistory(bids.previousBids);
 
     setIsHistoryLoading(false);
 
@@ -139,7 +136,7 @@ export default function HackathonBidding() {
           </Card>
 
           {/* Bid History */}
-          {/* <Card className="shadow-md border-t-4 border-t-blue-500 hover:shadow-lg transition-shadow">
+          <Card className="shadow-md border-t-4 border-t-blue-500 hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle className="flex items-center gap-2">
@@ -149,7 +146,7 @@ export default function HackathonBidding() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={fetchBidHistory}
+                  onClick={() => fetchBidHistory()}
                   disabled={isHistoryLoading}
                   className="flex items-center gap-1"
                 >
@@ -163,23 +160,23 @@ export default function HackathonBidding() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {bidHistory.length === 0 ? (
+                {(bidHistory?.length ?? 0) === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <History className="h-12 w-12 mx-auto mb-2 opacity-30" />
                     <p>No bids yet. Be the first to support!</p>
                   </div>
                 ) : (
                   <ul className="space-y-3">
-                    {bidHistory.map((bid) => (
+                    {bids.map((bid) => (
                       <li
-                        key={bid.id}
+                        key={`${bid.userId}-${bid.timestamp}`}
                         className="p-3 rounded-lg bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
                       >
                         <div className="flex justify-between items-center">
                           <div>
-                            <p className="font-medium">{bid.name}</p>
+                            <p className="font-medium">{bid.userId}</p>
                             <p className="text-xs text-gray-500">
-                              {bid.timestamp}
+                              {new Date(bid.timestamp).toLocaleDateString()}
                             </p>
                           </div>
                           <Badge className="bg-gradient-to-r from-purple-500 to-blue-500">
@@ -195,7 +192,7 @@ export default function HackathonBidding() {
             <CardFooter className="text-xs text-gray-500 justify-center">
               Top bidders will be recognized at the closing ceremony
             </CardFooter>
-          </Card> */}
+          </Card>
         </div>
       </div>
     </div>

@@ -5,25 +5,40 @@ import { connectToTemporal } from "../lib/temporal";
 const bidWorkflow = "car";
 
 export interface Bid {
-  id: number;
-  name: string;
-  amount: number;
-  timestamp: string;
+  userId: number;
+  amount: string;
+  isValid: number;
+  timestamp: number;
+}
+
+export interface Stats {
+  auctionId?: string;
+  state: "STARTED" | "COMPLETED";
+  previousBids: Bid[];
 }
 
 export async function sendBid(name: string, bidAmount: number) {
-  const client = await connectToTemporal();
-  const handle = client.workflow.getHandle(bidWorkflow);
-  handle.signal("bid", name, bidAmount);
+  try {
+    const client = await connectToTemporal();
+    const handle = client.workflow.getHandle(bidWorkflow);
+    handle.signal("bid", name, bidAmount);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-export async function getBids(): Promise<Bid[]> {
-  console.log(" test");
-  const client = await connectToTemporal();
-  const wf = client.workflow.getHandle(bidWorkflow);
+export async function getBids(): Promise<Stats> {
+  try {
+    const client = await connectToTemporal();
+    const wf = client.workflow.getHandle(bidWorkflow);
+    const bids = await wf.query("getStats");
+    return bids as Stats;
+  } catch (e) {
+    console.error(e);
+  }
 
-  const bids = await wf.query("getStats");
-  console.log("getBids", bids);
-
-  return bids as Bid[];
+  return Promise.resolve({
+    previousBids: [],
+    state: "STARTED",
+  });
 }
