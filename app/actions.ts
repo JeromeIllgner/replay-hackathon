@@ -1,8 +1,8 @@
 "use server";
 
-import { client } from "../lib/temporal";
+import { connectToTemporal } from "../lib/temporal";
 
-const bidWorkflow = "HackathonBidding";
+const bidWorkflow = "car";
 
 export interface Bid {
   id: number;
@@ -12,11 +12,13 @@ export interface Bid {
 }
 
 export async function sendBid(name: string, bidAmount: number) {
+  const client = await connectToTemporal();
   const handle = client.workflow.getHandle(bidWorkflow);
   handle.signal("bid", name, bidAmount);
 }
 
 export async function getBids(): Promise<Bid[]> {
+  const client = await connectToTemporal();
   const handle = client.workflow.getHandle(bidWorkflow);
   return handle.query("getStats") as Promise<Bid[]>;
 }
