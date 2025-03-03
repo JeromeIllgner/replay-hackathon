@@ -18,7 +18,12 @@ export async function sendBid(name: string, bidAmount: number) {
 }
 
 export async function getBids(): Promise<Bid[]> {
+  console.log(" test");
   const client = await connectToTemporal();
-  const handle = client.workflow.getHandle(bidWorkflow);
-  return handle.query("getStats") as Promise<Bid[]>;
+  const wf = client.workflow.getHandle(bidWorkflow);
+
+  const bids = await wf.query("getStats");
+  console.log("getBids", bids);
+
+  return bids as Bid[];
 }

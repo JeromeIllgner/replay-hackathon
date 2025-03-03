@@ -57,9 +57,14 @@ export default function HackathonBidding() {
 
   // Mock function to fetch bid history
   const fetchBidHistory = async () => {
+    await getBids();
     setIsHistoryLoading(true);
 
+    console.log("fetchBidHistory");
+
     const bids = await getBids();
+
+    console.log("finished fetch");
 
     setBidHistory(bids);
 
@@ -75,15 +80,15 @@ export default function HackathonBidding() {
           <div className="flex items-center justify-center gap-2 mb-2">
             <Rocket className="h-8 w-8 text-purple-500" />
             <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
-              HackBid 2025
+              Durable Bids 2025
             </h1>
           </div>
           <p className="text-gray-600">
-            Support your favorite hackathon projects!
+            Buy a (fake) car and support a (real) hackathon project
           </p>
         </header>
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-1">
           {/* Bid Submission Form */}
           <Card className="shadow-md border-t-4 border-t-purple-500 hover:shadow-lg transition-shadow">
             <CardHeader>
@@ -91,9 +96,7 @@ export default function HackathonBidding() {
                 <Zap className="h-5 w-5 text-yellow-500" />
                 Submit Your Bid
               </CardTitle>
-              <CardDescription>
-                Enter your name and bid amount to support a project
-              </CardDescription>
+              <CardDescription>Enter your name and bid amount</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmitBid} className="space-y-4">
@@ -136,7 +139,7 @@ export default function HackathonBidding() {
           </Card>
 
           {/* Bid History */}
-          <Card className="shadow-md border-t-4 border-t-blue-500 hover:shadow-lg transition-shadow">
+          {/* <Card className="shadow-md border-t-4 border-t-blue-500 hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle className="flex items-center gap-2">
@@ -192,7 +195,7 @@ export default function HackathonBidding() {
             <CardFooter className="text-xs text-gray-500 justify-center">
               Top bidders will be recognized at the closing ceremony
             </CardFooter>
-          </Card>
+          </Card> */}
         </div>
       </div>
     </div>
