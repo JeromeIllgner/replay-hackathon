@@ -5,9 +5,9 @@ import { connectToTemporal } from "../lib/temporal";
 const bidWorkflow = "car";
 
 export interface Bid {
-  userId: number;
-  amount: string;
-  isValid: number;
+  userId: string;
+  amount: number;
+  isValid: boolean;
   timestamp: number;
 }
 
