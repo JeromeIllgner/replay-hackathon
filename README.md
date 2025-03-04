@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Temporal Auction System – Hackathon 2025
+
+This project was built during the 2025 Temporal Replay Conference Hackathon, where the cyan team developed an auctioning demo to showcase a workflow using signals, queries and a codec server for encryption in the Java SDK. The system manages bid submissions and tracks bid history in a reliable and fault tolerant way.
 
 ## Getting Started
 
-First, run the development server:
+First, run install the deps:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
+```
+
+Then make sure your env file points to a valid temporal instance and there is a running worker and starter.
+Visit the [https://github.com/tomwheeler/hackathon-auction](original repo) for instructions there.
+
+You can view the example.env file for the env vars needed.
+
+Lastly run the dev server
+
+```bash
 bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Also deployed on Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+You can view this demo on [https://replay-hackathon.vercel.app/](https://replay-hackathon.vercel.app/)
 
-## Learn More
+If it is no longer working it is likely because the temporal instance has terminated after the hackathon.
 
-To learn more about Next.js, take a look at the following resources:
+## Future improvements
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [] Show Auction Winner
+- [] Add support to start new auctions
