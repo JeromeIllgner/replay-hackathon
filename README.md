@@ -11,7 +11,7 @@ bun install
 ```
 
 Then make sure your env file points to a valid temporal instance and there is a running worker and starter.
-Visit the [https://github.com/tomwheeler/hackathon-auction](original repo) for instructions there.
+Visit the [original repo](https://github.com/tomwheeler/hackathon-auction) for instructions there.
 
 You can view the example.env file for the env vars needed.
 
