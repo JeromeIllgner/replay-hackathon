@@ -16,19 +16,24 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Rocket, History, Trophy, Zap } from "lucide-react";
 import { toast } from "sonner";
-import { Bid, getBids, sendBid } from "../actions";
 import { useRouter } from "next/navigation";
+import { Bid, getBids, sendBid } from "../[item]/actions";
 
-export function HackathonBidding({ bids }: { bids: Bid[] }) {
+export function HackathonBidding({
+  bids,
+  item,
+  hasAuctionEnded,
+}: {
+  bids: Bid[];
+  item: string;
+  hasAuctionEnded?: boolean;
+}) {
   const [name, setName] = useState("");
   const [bidAmount, setBidAmount] = useState("");
   const [bidHistory, setBidHistory] = useState<Bid[]>(bids);
   const [isLoading, setIsLoading] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
-  const router = useRouter();
-
-  // Mock function to submit a bid
   const handleSubmitBid = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -41,7 +46,7 @@ export function HackathonBidding({ bids }: { bids: Bid[] }) {
 
     try {
       const amount = Number.parseInt(bidAmount);
-      await sendBid(name, amount);
+      await sendBid(name, amount, item);
 
       setBidAmount("");
       toast("Bid submitted! 🚀");
@@ -56,14 +61,12 @@ export function HackathonBidding({ bids }: { bids: Bid[] }) {
     }
   };
 
-  // Mock function to fetch bid history
   const fetchBidHistory = async () => {
-    await getBids();
     setIsHistoryLoading(true);
 
-    const bids = await getBids();
+    const bids = await getBids(item);
 
-    setBidHistory(bids.previousBids);
+    setBidHistory(bids.previousBids.filter((i) => i.isValid));
 
     setIsHistoryLoading(false);
 
@@ -81,7 +84,7 @@ export function HackathonBidding({ bids }: { bids: Bid[] }) {
             </h1>
           </div>
           <p className="text-gray-600">
-            Buy a (fake) car and support a (real) hackathon project
+            Buy a (fake) {item} and support a (real) hackathon project
           </p>
         </header>
 
@@ -124,13 +127,19 @@ export function HackathonBidding({ bids }: { bids: Bid[] }) {
                     className="border-gray-300 focus:ring-purple-500 focus:border-purple-500"
                   />
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Submitting..." : "Place Bid 🚀"}
-                </Button>
+                {hasAuctionEnded ? (
+                  <p className="text-xs text-red-500">
+                    Bidding has ended for this item
+                  </p>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Submitting..." : "Place Bid 🚀"}
+                  </Button>
+                )}
               </form>
             </CardContent>
           </Card>
@@ -167,7 +176,7 @@ export function HackathonBidding({ bids }: { bids: Bid[] }) {
                   </div>
                 ) : (
                   <ul className="space-y-3">
-                    {bids.map((bid) => (
+                    {bidHistory.map((bid) => (
                       <li
                         key={`${bid.userId}-${bid.timestamp}`}
                         className="p-3 rounded-lg bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
