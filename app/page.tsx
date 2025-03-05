@@ -25,6 +25,16 @@ export default async function Home() {
               Durable Bids 2025
             </h1>
           </div>
+          <p className="text-destructive">
+            The backend was only deployed for the duration of the hackathon.
+            Check out{" "}
+            <span>
+              <Link href="github.com/jeromeillgner/replay-hackathon">
+                the repo
+              </Link>
+            </span>{" "}
+            for instructions on deploying your own backend.
+          </p>
         </header>
 
         <div className="grid gap-8 md:grid-cols-1">

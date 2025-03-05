@@ -18,7 +18,11 @@ export function StartAuction() {
       <Input value={item} onChange={(e) => setItem(e.target.value)} />
       <Button
         onClick={() => {
-          startAuction(item);
+          const succeeded = startAuction(item);
+          if (!succeeded) {
+            toast("Failed to start auction 😢");
+            return;
+          }
           router.push(`/${item}`);
           toast("Auction started! 🚀");
         }}

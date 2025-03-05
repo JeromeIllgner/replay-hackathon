@@ -3,15 +3,16 @@
 import { connectToTemporal } from "../lib/temporal";
 
 export async function getAuctions() {
-  const auctions = [];
+  let auctions = [];
   try {
     const client = await connectToTemporal();
-    const workflows = client.workflow.list({});
+    const workflows = client.workflow.list();
 
     for await (const auction of workflows) {
       auctions.push(auction);
     }
   } catch (e) {
+    console.log("error encountered");
     console.error(e);
   }
 
@@ -19,10 +20,17 @@ export async function getAuctions() {
 }
 
 export async function startAuction(item: string) {
-  const client = await connectToTemporal();
+  console.log("starting auction for", item);
+  try {
+    const client = await connectToTemporal();
 
-  client.workflow.start("AuctionWorkflow", {
-    workflowId: item,
-    taskQueue: "auction",
-  });
+    await client.workflow.start("AuctionWorkflow", {
+      workflowId: item,
+      taskQueue: "auction",
+    });
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+  return true;
 }
